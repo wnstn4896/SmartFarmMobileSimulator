@@ -74,7 +74,7 @@ export class MainScene extends Phaser.Scene {
                 let plantSprite = this.physics.add.sprite(xPos, groundY, spriteKey);
 
                 // 작물을 '크게' 생성하기 위해 스케일 업
-                plantSprite.setScale(8);
+                plantSprite.setScale(10);
 
                 // [가산점 팁] 종합 상태(flag)에 따라 작물의 시각적 상태 변화 적용
                 if (flag === 2) {
