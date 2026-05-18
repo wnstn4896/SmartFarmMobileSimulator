@@ -4,6 +4,7 @@ import { MainScene } from './scenes/MainScene.js';
 // 우클릭 시 툴팁 출력으로 인한 오류 방지를 위해 우클릭 이벤트 비활성화
 document.oncontextmenu = function (e) { return false; }
 
+// 게임 엔진 설정
 const config = {
     type: Phaser.AUTO,
     width: 1280, // 너비 1280px
