@@ -45,7 +45,7 @@ export class MainScene extends Phaser.Scene {
         window.mainSceneInstance = this;
     }
 
-    // 안드로이드에서 전달받은 데이터를 처리하여 화면에 작물을 그리는 커스텀 메서드
+    // 안드로이드에서 전달받은 데이터를 처리하여 화면에 작물 스프라이트를 띄우는 메서드
     updateFarmData(plantsStr, temp, humidity, light, flag) {
         // 기존에 화면에 그려진 작물이 있다면 모두 파괴하여 겹치지 않게 초기화
         this.currentPlantSprites.forEach(sprite => sprite.destroy());
@@ -57,9 +57,9 @@ export class MainScene extends Phaser.Scene {
         // "감자, 토마토" 형태의 문자열을 쉼표 기준으로 분리해 배열로 변환: ['감자', '토마토']
         const plantNames = plantsStr.split(', ');
 
-        // 화면 너비 기준값 (배경 중심이 640이므로 전체 너비를 1280으로 설정)
-        const screenWidth = 1280;
-        const groundY = 450; // 작물들이 서 있을 땅의 Y 좌표 (배경 이미지에 맞게 조절하세요)
+        // 화면 너비 기준값
+        const screenWidth = 1280; // 전체 너비
+        const groundY = 360; // 작물들이 서 있을 땅의 Y 좌표
 
         // 선택된 작물 개수만큼 반복하며 스프라이트 생성
         plantNames.forEach((name, index) => {
@@ -70,13 +70,13 @@ export class MainScene extends Phaser.Scene {
                 // 1개일 때: 정중앙 (640), 2개일 때: (426, 853), 3개일 때: (320, 640, 960)
                 const xPos = screenWidth / (plantNames.length + 1) * (index + 1);
 
-                // 스프라이트 추가 (물리 엔진 적용이 필요 없다면 this.add.sprite 사용 권장)
+                // 스프라이트 생성
                 let plantSprite = this.physics.add.sprite(xPos, groundY, spriteKey);
 
-                // 작물을 '크게' 생성하기 위해 스케일 업
-                plantSprite.setScale(10);
+                // 스프라이트 크기 조정
+                plantSprite.setScale(9);
 
-                // [가산점 팁] 종합 상태(flag)에 따라 작물의 시각적 상태 변화 적용
+                // 종합 상태에 따라 작물의 시각적 상태 변화 적용
                 if (flag === 2) {
                     // 위험 상태: 붉은색 필터를 씌움 (물 부족, 온도 이상 등)
                     plantSprite.setTint(0xff4444);
@@ -95,8 +95,7 @@ export class MainScene extends Phaser.Scene {
     }
 }
 
-// ★ 4. HTML/브라우저 전역(window) 공간에 안드로이드가 직접 호출할 브릿지 함수 선언
-// 이 코드는 클래스 바깥쪽, 파일의 제일 하단에 위치해야 합니다.
+// HTML/브라우저 전역(window) 공간에 안드로이드가 직접 호출할 브릿지 함수
 window.updateGameStatus = function (plants, temp, humidity, light, flag) {
     if (window.mainSceneInstance) {
         // Scene 내부에 만들어둔 updateFarmData 메서드로 값 전달
