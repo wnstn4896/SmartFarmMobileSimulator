@@ -43,6 +43,8 @@ export class MainScene extends Phaser.Scene {
 
         // 전역 윈도우 객체에서 현재 Scene 인스턴스에 접근할 수 있도록 저장
         window.mainSceneInstance = this;
+
+        console.log("커밋된거 확인 - 1");
     }
 
     // 안드로이드에서 전달받은 데이터를 처리하여 화면에 작물 스프라이트를 띄우는 메서드
