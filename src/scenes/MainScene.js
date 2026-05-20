@@ -60,6 +60,7 @@ export class MainScene extends Phaser.Scene {
         // 화면 너비 기준값
         const screenWidth = 1280; // 전체 너비
         const groundY = 360; // 작물들이 서 있을 땅의 Y 좌표
+        const gap = 400; // 스프라이트별 여유 간격
 
         // 선택된 작물 개수만큼 반복하며 스프라이트 생성
         plantNames.forEach((name, index) => {
@@ -69,6 +70,18 @@ export class MainScene extends Phaser.Scene {
                 // 개수에 맞춰 화면을 n등분하여 X 좌표를 균등하게 자동 계산
                 // 1개일 때: 정중앙 (640), 2개일 때: (426, 853), 3개일 때: (320, 640, 960)
                 const xPos = screenWidth / (plantNames.length + 1) * (index + 1);
+
+                // 선택한 작물 개수에 따라 각 스프라이트의 위치 조정
+                if (plantNames.length === 1) {
+                    // 1개일 때: 정중앙
+                    xPos = screenWidth / 2;
+                } else if (plantNames.length === 2) {
+                    // 2개일 때: 중앙을 기준으로 좌우로 반 칸씩 이동
+                    xPos = (screenWidth / 2) - (gap / 2) + (index * gap);
+                } else if (plantNames.length === 3) {
+                    // 3개일 때: 중앙 1개, 양옆 1개씩 이동
+                    xPos = (screenWidth / 2) - gap + (index * gap);
+                }
 
                 // 스프라이트 생성
                 let plantSprite = this.physics.add.sprite(xPos, groundY, spriteKey);
