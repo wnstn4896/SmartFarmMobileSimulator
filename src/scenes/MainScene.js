@@ -43,8 +43,6 @@ export class MainScene extends Phaser.Scene {
 
         // 전역 윈도우 객체에서 현재 Scene 인스턴스에 접근할 수 있도록 저장
         window.mainSceneInstance = this;
-
-        console.log("커밋된거 확인 - 1");
     }
 
     // 안드로이드에서 전달받은 데이터를 처리하여 화면에 작물 스프라이트를 띄우는 메서드
@@ -69,13 +67,14 @@ export class MainScene extends Phaser.Scene {
 
             if (spriteKey) {
                 // 개수에 맞춰 화면을 n등분하여 X 좌표를 균등하게 자동 계산
-                const xPos = (screenWidth / 2) + (index - (plantNames.length - 1) / 2) * 600;
+                // 1개일 때: 정중앙 (640), 2개일 때: (426, 853), 3개일 때: (320, 640, 960)
+                const xPos = screenWidth / (plantNames.length + 1) * (index + 1);
 
                 // 스프라이트 생성
                 let plantSprite = this.physics.add.sprite(xPos, groundY, spriteKey);
 
                 // 스프라이트 크기 조정
-                plantSprite.setScale(9);
+                plantSprite.setScale(8);
 
                 // 종합 상태에 따라 작물의 시각적 상태 변화 적용
                 if (flag === 2) {
