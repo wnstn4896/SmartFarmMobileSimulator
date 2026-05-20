@@ -87,7 +87,7 @@ export class MainScene extends Phaser.Scene {
                 let plantSprite = this.physics.add.sprite(xPos, groundY, spriteKey);
 
                 // 스프라이트 크기 조정
-                plantSprite.setScale(9);
+                plantSprite.setScale(10);
 
                 // 종합 상태에 따라 작물의 시각적 상태 변화 적용
                 if (flag === 2) {
