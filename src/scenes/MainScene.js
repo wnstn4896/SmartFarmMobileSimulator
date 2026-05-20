@@ -67,7 +67,7 @@ export class MainScene extends Phaser.Scene {
 
             if (spriteKey) {
                 // 개수에 맞춰 화면을 n등분하여 X 좌표를 균등하게 자동 계산
-                const xPos = (screenWidth / 2) + (index - (plantNames.length - 1) / 2) * 400;
+                const xPos = (screenWidth / 2) + (index - (plantNames.length - 1) / 2) * 600;
 
                 // 스프라이트 생성
                 let plantSprite = this.physics.add.sprite(xPos, groundY, spriteKey);
