@@ -60,22 +60,14 @@ export class MainScene extends Phaser.Scene {
         // 화면 너비 기준값
         const screenWidth = 1280; // 전체 너비
         const groundY = 360; // 작물들이 서 있을 땅의 Y 좌표
-        const availableWidth = screenWidth - (margin * 2); // 실제 작물들이 배치될 수 있는 너비
 
         // 선택된 작물 개수만큼 반복하며 스프라이트 생성
         plantNames.forEach((name, index) => {
             const spriteKey = this.plantKeyMap[name];
 
             if (spriteKey) {
-                // 여백(margin)에서 시작하여 균등하게 배치
-                let xPos;
-                if (plantNames.length === 1) {
-                    xPos = screenWidth / 2; // 1개일 때는 무조건 정중앙
-                } else {
-                    // 2개 이상일 때는 사용 가능한 너비(availableWidth)를 나눠서 간격을 넓힘
-                    const spacing = availableWidth / (plantNames.length - 1);
-                    xPos = margin + (spacing * index);
-                }
+                // 개수에 맞춰 화면을 n등분하여 X 좌표를 균등하게 자동 계산
+                const xPos = (screenWidth / 2) + (index - (plantNames.length - 1) / 2) * 100;
 
                 // 스프라이트 생성
                 let plantSprite = this.physics.add.sprite(xPos, groundY, spriteKey);
