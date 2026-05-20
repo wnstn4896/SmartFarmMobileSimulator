@@ -67,14 +67,14 @@ export class MainScene extends Phaser.Scene {
 
             if (spriteKey) {
                 // 개수에 맞춰 화면을 n등분하여 X 좌표를 균등하게 자동 계산
-                // 1개일 때: 정중앙 (640), 2개일 때: (426, 853), 3개일 때: (320, 640, 960)
-                const xPos = screenWidth / (plantNames.length + 1) * (index + 1);
+                // 중심점(screenWidth / 2)을 기준으로 작물 간의 고정 간격을 곱하여 X 좌표 계산
+                const xPos = (screenWidth / 2) + (index - (plantNames.length - 1) / 2) * 400;
 
                 // 스프라이트 생성
                 let plantSprite = this.physics.add.sprite(xPos, groundY, spriteKey);
 
                 // 스프라이트 크기 조정
-                plantSprite.setScale(8);
+                plantSprite.setScale(10);
 
                 // 종합 상태에 따라 작물의 시각적 상태 변화 적용
                 if (flag === 2) {
