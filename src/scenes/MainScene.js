@@ -126,27 +126,28 @@ export class MainScene extends Phaser.Scene {
 
     // 자연재해 이벤트 발생 시 화면 효과를 전담하는 메서드
     handleDisasterEffect(disaster) {
-        // 이전에 적용된 카메라 효과 초기화
-        this.cameras.main.clearTint();
+        // 이전에 적용된 필터 효과 초기화
+        this.background.clearTint();
         // 파티클 에미터 중지(초기화)
         this.floodEmitter.stop();
-        this.typhoonEmitter.stop()
+        this.typhoonEmitter.stop();
 
         switch (disaster) {
             case 0: // 이상 없음
                 break;
             case 1: // 가뭄 발생 시
                 // 화면 전체에 덥고 메마른 느낌의 주황빛 필터를 씌움
-                this.cameras.main.setTint(0xffaa55);
+                this.background.setTint(0xffaa55);
                 break;
             case 2: // 홍수 발생 시
                 // 화면 전체에 물에 잠긴 느낌의 푸른빛 필터를 씌움
-                this.cameras.main.setTint(0x5555ff);
+                this.background.setTint(0x5555ff);
                 this.floodEmitter.start(); // 홍수용 파티클 에미터 실행
                 break;
             case 3: // 태풍 발생 시
                 // 10초 동안 0.01의 강도로 화면 흔들림 효과 실행
                 this.cameras.main.shake(10000, 0.01);
+                this.background.setTint(0x555555); // 먹구름이 낀 느낌의 어두운 회색 필터를 씌움
                 this.typhoonEmitter.start(); // 태풍용 파티클 에미터 실행
                 break;
         }
