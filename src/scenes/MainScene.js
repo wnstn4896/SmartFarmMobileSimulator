@@ -51,15 +51,26 @@ export class MainScene extends Phaser.Scene {
         graphics.destroy(); // 텍스처를 메모리에 저장한 뒤 그래픽 객체는 파괴
 
         // 파티클 에미터 생성 및 초기 설정
-        this.rainParticles = this.add.particles('raindrop');
-        this.rainEmitter = this.rainParticles.createEmitter({
+        // 홍수용 파티클 에미터 (바람 없이 무겁게 수직 낙하)
+        this.floodEmitter = this.add.particles(0, -20, 'raindrop', {
             x: { min: 0, max: 1280 }, // 화면 가로 전체 범위에서 떨어짐
-            y: -20, // 화면 약간 위에서 생성되어 떨어지기 시작
             lifespan: 1500, // 빗방울 수명
-            speedY: { min: 500, max: 700 }, // 떨어지는 속도
+            speedY: { min: 600, max: 800 }, // 떨어지는 세로 속도
+            speedX: 0, // 좌우 흔들림 없음
             scale: { start: 1, end: 0.5 },
-            quantity: 0, // 초기값 0 (비 안 옴)
-            on: false // 초기 상태 꺼짐
+            quantity: 15, // 한 번에 생성되는 빗방울 양
+            emitting: false // 처음에는 비가 오지 않도록 끔
+        });
+
+        // 태풍용 파티클 에미터 (거센 강풍에 의해 대각선으로 흩날림)
+        this.typhoonEmitter = this.add.particles(0, -20, 'raindrop', {
+            x: { min: 0, max: 1280 },
+            lifespan: 1500,
+            speedY: { min: 800, max: 1000 }, // 홍수보다 더 빨리 떨어짐
+            speedX: { min: -400, max: -200 }, // 왼쪽으로 강하게 날림
+            scale: { start: 1, end: 0.5 },
+            quantity: 20, // 홍수보다 더 거세게 내림
+            emitting: false // 처음에는 비가 오지 않도록 끔
         });
 
         // 전역 윈도우 객체에서 현재 Scene 인스턴스에 접근할 수 있도록 지정
@@ -117,34 +128,26 @@ export class MainScene extends Phaser.Scene {
     handleDisasterEffect(disaster) {
         // 이전에 적용된 카메라 효과 초기화
         this.cameras.main.clearTint();
+        // 파티클 에미터 중지(초기화)
+        this.floodEmitter.stop();
+        this.typhoonEmitter.stop()
 
         switch (disaster) {
             case 0: // 이상 없음
-                this.rainEmitter.stop(); // 비 효과 파티클 에미터 중지
                 break;
             case 1: // 가뭄 발생 시
                 // 화면 전체에 덥고 메마른 느낌의 주황빛 필터를 씌움
                 this.cameras.main.setTint(0xffaa55);
-                this.rainEmitter.stop(); // 비 효과 파티클 에미터 중지
                 break;
             case 2: // 홍수 발생 시
                 // 화면 전체에 물에 잠긴 느낌의 푸른빛 필터를 씌움
                 this.cameras.main.setTint(0x5555ff);
-
-                // 수직으로 무겁게 쏟아지는 폭우 효과 설정
-                this.rainEmitter.setSpeedX(0); // 좌우 흔들림 없음
-                this.rainEmitter.setSpeedY({ min: 600, max: 800 });
-                this.rainEmitter.setQuantity(15); // 한 프레임당 15방울씩 생성
-                this.rainEmitter.start();
+                this.floodEmitter.start(); // 홍수용 파티클 에미터 실행
                 break;
             case 3: // 태풍 발생 시
                 // 10초 동안 0.01의 강도로 화면 흔들림 효과 실행
                 this.cameras.main.shake(10000, 0.01);
-                // 강풍에 의해 왼쪽으로 거세게 날리는 비 효과 설정
-                this.rainEmitter.setSpeedX({ min: -400, max: -200 }); // 대각선으로 날림
-                this.rainEmitter.setSpeedY({ min: 800, max: 1000 }); // 매우 빠른 낙하 속도
-                this.rainEmitter.setQuantity(20); // 홍수보다 더 많은 빗방울
-                this.rainEmitter.start();
+                this.typhoonEmitter.start(); // 태풍용 파티클 에미터 실행
                 break;
         }
     }
