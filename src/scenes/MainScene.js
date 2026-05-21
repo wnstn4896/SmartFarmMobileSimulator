@@ -120,10 +120,12 @@ export class MainScene extends Phaser.Scene {
 
         switch (disaster) {
             case 0: // 이상 없음
+                this.rainEmitter.stop(); // 비 효과 파티클 에미터 중지
                 break;
             case 1: // 가뭄 발생 시
                 // 화면 전체에 덥고 메마른 느낌의 주황빛 필터를 씌움
                 this.cameras.main.setTint(0xffaa55);
+                this.rainEmitter.stop(); // 비 효과 파티클 에미터 중지
                 break;
             case 2: // 홍수 발생 시
                 // 화면 전체에 물에 잠긴 느낌의 푸른빛 필터를 씌움
