@@ -13,8 +13,6 @@ export class MainScene extends Phaser.Scene {
             '마늘': 'garlic', '양파': 'onion', '파프리카': 'paprika',
             '브로콜리': 'broccoli'
         };
-
-        this.disaster; // 자연재해 발생 여부를 파악하기 위한 변수
     }
 
     // 리소스를 불러와 로드하는 메서드
@@ -43,7 +41,7 @@ export class MainScene extends Phaser.Scene {
         // 로드된 이미지를 배경으로 추가
         this.background = this.physics.add.sprite(640, 350, 'background');
 
-        // 홍수, 태풍 발생 시 사용할 빗방울 텍스처 생성
+        // 폭우, 태풍 발생 시 사용할 빗방울 텍스처 생성
         let graphics = this.add.graphics();
         graphics.fillStyle(0x88CCFF, 0.8); // 약간 투명한 하늘색
         graphics.fillRect(0, 0, 3, 15); // 3x15 픽셀 크기의 길쭉한 직사각형 빗방울
@@ -51,7 +49,7 @@ export class MainScene extends Phaser.Scene {
         graphics.destroy(); // 텍스처를 메모리에 저장한 뒤 그래픽 객체는 파괴
 
         // 파티클 에미터 생성 및 초기 설정
-        // 홍수용 파티클 에미터 (바람 없이 무겁게 수직 낙하)
+        // 폭우용 파티클 에미터 (바람 없이 무겁게 수직 낙하)
         this.floodEmitter = this.add.particles(0, -20, 'raindrop', {
             x: { min: 0, max: 1280 }, // 화면 가로 전체 범위에서 떨어짐
             lifespan: 1500, // 빗방울 수명
@@ -66,10 +64,10 @@ export class MainScene extends Phaser.Scene {
         this.typhoonEmitter = this.add.particles(0, -20, 'raindrop', {
             x: { min: 0, max: 1280 },
             lifespan: 1500,
-            speedY: { min: 800, max: 1000 }, // 홍수보다 더 빨리 떨어짐
+            speedY: { min: 800, max: 1000 }, // 폭우보다 더 빨리 떨어짐
             speedX: { min: -400, max: -200 }, // 왼쪽으로 강하게 날림
             scale: { start: 1, end: 0.5 },
-            quantity: 20, // 홍수보다 더 거세게 내림
+            quantity: 20, // 폭우보다 더 거세게 내림
             emitting: false // 처음에는 비가 오지 않도록 끔
         });
 
@@ -78,7 +76,7 @@ export class MainScene extends Phaser.Scene {
     }
 
     // 안드로이드에서 전달받은 데이터를 처리하여 화면에 작물 스프라이트를 띄우는 메서드
-    updateFarmData(plantsStr, temp, humidity, light, flag, disaster) {
+    updateFarmData(plantsStr, flag, disaster) {
         // 기존에 화면에 그려진 작물이 있다면 모두 제거하여 겹치지 않게 초기화
         this.currentPlantSprites.forEach(sprite => sprite.destroy());
         this.currentPlantSprites = [];
@@ -139,10 +137,10 @@ export class MainScene extends Phaser.Scene {
                 // 화면 전체에 덥고 메마른 느낌의 주황빛 필터를 씌움
                 this.background.setTint(0xffaa55);
                 break;
-            case 2: // 홍수 발생 시
+            case 2: // 폭우 발생 시
                 // 화면 전체에 물에 잠긴 느낌의 푸른빛 필터를 씌움
                 this.background.setTint(0x5555ff);
-                this.floodEmitter.start(); // 홍수용 파티클 에미터 실행
+                this.floodEmitter.start(); // 폭우용 파티클 에미터 실행
                 break;
             case 3: // 태풍 발생 시
                 // 10초 동안 0.01의 강도로 화면 흔들림 효과 실행
@@ -155,10 +153,9 @@ export class MainScene extends Phaser.Scene {
 }
 
 // HTML/브라우저 전역(window) 공간에 안드로이드가 직접 호출할 브릿지 함수
-window.updateGameStatus = function (plants, temp, humidity, light, flag, disaster) {
+window.updateGameStatus = function (plants, flag, disaster) {
     if (window.mainSceneInstance) {
         // 클래스 내부에 만들어둔 updateFarmData 메서드로 값 전달
-        window.mainSceneInstance.updateFarmData(plants, temp, humidity, light, flag, disaster);
-        this.disaster = disaster;
+        window.mainSceneInstance.updateFarmData(plants, flag, disaster);
     }
 };
